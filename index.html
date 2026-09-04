@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة بناء السيرة الذاتية الاحترافية - المبرمج ميزو / مازن ناصر المولد</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- html2pdf for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap');
+        body { font-family: 'Cairo', sans-serif; }
+        .font-cairo { font-family: 'Cairo', sans-serif; }
+        .font-tajawal { font-family: 'Tajawal', sans-serif; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+        .a4-paper {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm;
+            margin: auto;
+            background: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const themeColors = {
+            navy: { primary: '#0f172a', text: 'text-slate-900', border: 'border-slate-900', bg: 'bg-slate-50' },
+            blue: { primary: '#1e40af', text: 'text-blue-800', border: 'border-blue-800', bg: 'bg-blue-50' },
+            emerald: { primary: '#047857', text: 'text-emerald-800', border: 'border-emerald-800', bg: 'bg-emerald-50' },
+            burgundy: { primary: '#831843', text: 'text-pink-900', border: 'border-pink-900', bg: 'bg-pink-50' },
+            indigo: { primary: '#4338ca', text: 'text-indigo-900', border: 'border-indigo-900', bg: 'bg-indigo-50' },
+            teal: { primary: '#0f766e', text: 'text-teal-900', border: 'border-teal-900', bg: 'bg-teal-50' },
+            charcoal: { primary: '#334155', text: 'text-slate-800', border: 'border-slate-800', bg: 'bg-slate-100' },
+            bronze: { primary: '#78350f', text: 'text-amber-900', border: 'border-amber-900', bg: 'bg-amber-50' }
+        };
+
+        const translations = {
+            ar: {
+                title: "منصة السير الذاتية الذكية (ATS)",
+                subtitle: "تطوير: المبرمج ميزو / مازن ناصر المولد",
+                langBtn: "English",
+                aiTab: "مساعد الذكاء الاصطناعي الشامل ✨",
+                personalTab: "الشخصية والروابط",
+                expTab: "الخبرات والتعليم",
+                projectsTab: "المشاريع والشهادات",
+                moreTab: "المهارات واللغات",
+                extraTab: "الإنجازات والمراجع",
+                designTab: "التصميم والتخصيص",
+                personalInfo: "المعلومات الشخصية والاتصال",
+                fullName: "الاسم الكامل",
+                jobTitle: "المسمى الوظيفي المستهدف",
+                email: "البريد الإلكتروني",
+                phone: "رقم الهاتف",
+                address: "العنوان / المدينة",
+                linkedin: "رابط LinkedIn",
+                github: "رابط معرض الأعمال / GitHub",
+                website: "الموقع الشخصي",
+                summary: "الملخص المهني",
+                experience: "الخبرات العملية",
+                addExperience: "+ إضافة خبرة",
+                company: "الشركة / الجهة",
+                role: "المسمى الوظيفي",
+                duration: "الفترة الزمنية",
+                description: "الوصف والمهام والإنجازات",
+                education: "المؤهلات التعليمية",
+                addEducation: "+ إضافة مؤهل",
+                degree: "المؤهل / التخصص",
+                institution: "الجامعة / الكلية",
+                projects: "المشاريع والنماذج",
+                addProject: "+ إضافة مشروع",
+                projName: "اسم المشروع",
+                projLink: "رابط المشروع",
+                certs: "الشهادات والدورات الاحترافية",
+                addCert: "+ إضافة شهادة",
+                certName: "اسم الشهادة",
+                issuer: "الجهة المانحة",
+                skills: "المهارات الفنية والناعمة (افصل بينها بفاصلة)",
+                languages: "اللغات المتقنة",
+                addLang: "+ إضافة لغة",
+                langName: "اللغة",
+                langLevel: "المستوى",
+                achievements: "الجوائز والإنجازات",
+                addAch: "+ إضافة إنجاز",
+                achTitle: "عنوان الإنجاز / الجائزة",
+                achDesc: "التفاصيل",
+                references: "المراجع والتوصيات",
+                addRef: "+ إضافة مرجع",
+                refName: "اسم الشخص / الموصي",
+                refRole: "المسمى والجهة",
+                refContact: "بيانات التواصل",
+                downloadPdf: "تحميل السيرة الذاتية (PDF)",
+                footer: "جميع الحقوق محفوظة © المبرمج ميزو / مازن ناصر المولد - حلول رقمية احترافية",
+                chooseTemplate: "اختر هيكل ATS الأساسي:",
+                chooseColor: "اختر اللون الرئيسي:",
+                chooseFont: "نوع الخط:",
+                chooseFontSize: "حجم النص:",
+                aiTitle: "مساعد الذكاء الاصطناعي الذكي الشامل",
+                aiSub: "اختر الخيار المناسب لتوليد وتحسين السيرة الذاتية بالكامل تلقائياً:",
+                btnFullResume: "توليد سيرة ذاتية كاملة تلقائياً بناءً على المسمى الوظيفي ✨",
+                btnCoverLetter: "إنشاء خطاب تغطية احترافي (Cover Letter)",
+                btnMatchJob: "مطابقة السيرة الذاتية مع إعلان وظيفي محدد",
+                btnTranslate: "ترجمة السيرة الذاتية بالكامل للغة الأُخرى",
+                summaryStyle: "أسلوب الملخص المهني:",
+                style1: "قيادي واحترافي",
+                style2: "موجّه للإنجازات والنتائج",
+                style3: "عصري ومختصر",
+                btnGenSummary: "توليد ملخص مهني فقط",
+                btnEnhanceExp: "إعادة صياغة جميع الخبرات بأسلوب ATS",
+                btnGenSkills: "اقتراح مهارات متكاملة",
+                btnCheckResume: "فحص وتقييم كامل السيرة",
+                btnInterviewQs: "أسئلة المقابلات التنافسية",
+                jobDescPlaceholder: "الصق الوصف الوظيفي هنا لضبط الكلمات المفتاحية..."
+            },
+            en: {
+                title: "AI ATS Resume Builder Pro",
+                subtitle: "Dev: Programmer Mizo / Mazen Nasser Al-Mowallad",
+                langBtn: "عربي",
+                aiTab: "AI Assistant Hub ✨",
+                personalTab: "Personal & Links",
+                expTab: "Exp & Education",
+                projectsTab: "Projects & Certs",
+                moreTab: "Skills & Languages",
+                extraTab: "Awards & References",
+                designTab: "Design & Styles",
+                personalInfo: "Personal & Contact Info",
+                fullName: "Full Name",
+                jobTitle: "Target Job Title",
+                email: "Email Address",
+                phone: "Phone Number",
+                address: "Address / Location",
+                linkedin: "LinkedIn URL",
+                github: "GitHub / Portfolio URL",
+                website: "Personal Website",
+                summary: "Professional Summary",
+                experience: "Work Experience",
+                addExperience: "+ Add Experience",
+                company: "Company",
+                role: "Role",
+                duration: "Duration",
+                description: "Description & Achievements",
+                education: "Education",
+                addEducation: "+ Add Education",
+                degree: "Degree / Major",
+                institution: "University / College",
+                projects: "Projects & Portfolio",
+                addProject: "+ Add Project",
+                projName: "Project Name",
+                projLink: "Project Link",
+                certs: "Certificates & Training",
+                addCert: "+ Add Certificate",
+                certName: "Certificate Name",
+                issuer: "Issuer / Organization",
+                skills: "Technical & Soft Skills (Comma separated)",
+                languages: "Languages",
+                addLang: "+ Add Language",
+                langName: "Language",
+                langLevel: "Proficiency Level",
+                achievements: "Honors & Awards",
+                addAch: "+ Add Award",
+                achTitle: "Award Title",
+                achDesc: "Details",
+                references: "References",
+                addRef: "+ Add Reference",
+                refName: "Reference Name",
+                refRole: "Role & Organization",
+                refContact: "Contact Info",
+                downloadPdf: "Download Resume (PDF)",
+                footer: "All Rights Reserved © Programmer Mizo / Mazen Nasser Al-Mowallad",
+                chooseTemplate: "Choose Base ATS Layout:",
+                chooseColor: "Select Primary Color:",
+                chooseFont: "Select Font Family:",
+                chooseFontSize: "Font Size:",
+                aiTitle: "Full-Featured AI Assistant",
+                aiSub: "Generate and optimize your entire resume with automated AI tools:",
+                btnFullResume: "Auto-Generate Complete Resume for Job Title ✨",
+                btnCoverLetter: "Generate Matching Cover Letter",
+                btnMatchJob: "Tailor Resume to Job Description",
+                btnTranslate: "Translate Entire Resume",
+                summaryStyle: "Summary Style:",
+                style1: "Leadership & Corporate",
+                style2: "Results-Driven",
+                style3: "Modern & Concise",
+                btnGenSummary: "Generate Summary Only",
+                btnEnhanceExp: "Enhance All Experiences for ATS",
+                btnGenSkills: "Suggest Complete Skillset",
+                btnCheckResume: "Audit & Score Resume",
+                btnInterviewQs: "Generate Interview Questions",
+                jobDescPlaceholder: "Paste job description here to optimize ATS keywords..."
+            }
+        };
+
+        function App() {
+            const [lang, setLang] = useState('ar');
+            const [activeTab, setActiveTab] = useState('personal');
+            const [selectedLayout, setSelectedLayout] = useState('layout1');
+            const [selectedColor, setSelectedColor] = useState('navy');
+            const [selectedFont, setSelectedFont] = useState('font-cairo');
+            const [fontSize, setFontSize] = useState('text-xs');
+            
+            // AI States
+            const [aiLoading, setAiLoading] = useState(false);
+            const [summaryStyle, setSummaryStyle] = useState('style1');
+            const [jobDescInput, setJobDescInput] = useState('');
+            const [aiResultBox, setAiResultBox] = useState(null);
+
+            const t = translations[lang];
+
+            const [formData, setFormData] = useState({
+                fullName: 'مازن ناصر المولد',
+                jobTitle: 'مبرمج ومطور حلول رقمية وتطبيقات',
+                email: 'mazen@example.com',
+                phone: '+966 59 273 2727',
+                address: 'المملكة العربية السعودية',
+                linkedin: 'linkedin.com/in/mazen-almowallad',
+                github: 'github.com/mazen-mizo',
+                website: 'mazen-dev.com',
+                summary: 'مبرمج ومطور شغوف بتطوير المنصات الرقمية والمواقع الإلكترونية الاحترافية وتطبيقات الجوال، أتمتع بمهارات عالية في البرمجة والتصميم وبناء الأنظمة المتوافقة مع معايير جودة البرمجيات.',
+                skills: 'React, Next.js, Node.js, Tailwind CSS, Python, PostgreSQL, Git, RESTful APIs, UI/UX Design',
+                experiences: [
+                    { company: 'RPL', role: 'مشغل الات ومطور حلول', duration: '2023 - الحالي', description: 'إدارة وتطبيق معايير التشغيل والصيانة البرمجية مع متابعة وتحسين الأداء الدوري للأنظمة.' }
+                ],
+                educations: [
+                    { degree: 'دبلوم برمجة و تطوير الويب', institution: 'كلية التقنية بالمدينة المنورة', duration: '2020 - 2024' }
+                ],
+                projects: [
+                    { name: 'منصة بناء السير الذاتية ATS', link: 'https://mizo-resume.com', description: 'نظام متكامل لتوليد وتحميل السير الذاتية الاحترافية المتوافقة مع خوارزميات الفرز الآلي.' }
+                ],
+                certificates: [
+                    { name: 'شهادة تطوير التطبيقات والحلول السحابية', issuer: 'أكاديمية طويق', year: '2025' }
+                ],
+                languagesList: [
+                    { name: 'العربية', level: 'اللغة الأم (Native)' },
+                    { name: 'الإنجليزية', level: 'متقدم (Professional)' }
+                ],
+                achievements: [
+                    { title: 'المركز الثامن عشر في هاكاثون الابتكار البرمجي', details: 'تطوير حل رقمي لإدارة البيانات الذكية' }
+                ],
+                references: [
+                    { name: 'د. أحمد السعيد', role: 'رئيس قسم التقنية - شركة الحلول', contact: 'ahmed@example.com' }
+                ]
+            });
+
+            // AI Action: Auto Generate Complete Resume
+            const handleGenerateFullResume = () => {
+                setAiLoading(true);
+                setAiResultBox(null);
+                setTimeout(() => {
+                    const title = formData.jobTitle || 'مبرمج ومطور برمجيات';
+                    if (lang === 'ar') {
+                        setFormData(prev => ({
+                            ...prev,
+                            summary: `متخصص ومحترف في ${title} يمتلك خبرة عمل ومؤهلات تقنية متقدمة. متخصص في تحليل المتطلبات لبناء حلول رقمية مبتكرة وعالية الأداء، مع التركيز التام على تحسين تجربة المستخدم وتحقيق معايير الأمان والجودة العالمية.`,
+                            skills: 'حل المشكلات التقنية, إدارة المشاريع البرمجية, تطوير واجهات المستخدم, هندسة البرمجيات, قواعد البيانات, التواصل الفعال, العمل الجماعي, التفكير التحليلي',
+                            experiences: [
+                                { company: 'شركة التقنيات الحديثة', role: title, duration: '2023 - الحالي', description: 'قيادة وتطوير المبادرات البرمجية والحلول الرقمية، وتصميم قواعد البيانات وبناء واجهات البرمجة المتقدمة التي حسنت السرعة التشغيلية بنسبة 35%.' },
+                                { company: 'مؤسسة الابتكار البرمجي', role: `مساعد ${title}`, duration: '2021 - 2023', description: 'المشاركة في صيانة واختبار الأنظمة البرمجية، ومعالجة المشكلات التقنية اليومية لضمان لاستمرارية الخدمة بكفاءة عالية.' }
+                            ],
+                            projects: [
+                                { name: `منصة ${title} الذكية`, link: 'https://project-demo.com', description: 'مشروع متكامل يهدف إلى تسهيل العمليات وإدارة البيانات باستخدام أحدث التقنيات البرمجية.' }
+                            ],
+                            certificates: [
+                                { name: `شهادة احترافية في ${title}`, issuer: 'الأكاديمية الرقمية', year: '2025' }
+                            ]
+                        }));
+                    } else {
+                        setFormData(prev => ({
+                            ...prev,
+                            summary: `Dedicated and results-driven ${title} with proven expertise in building scalable applications, system architecture, and delivering high-impact solutions to boost operational performance.`,
+                            skills: 'Problem Solving, Full Stack Development, Agile Methodologies, Database Architecture, System Optimization, Project Management, Critical Thinking',
+                            experiences: [
+                                { company: 'Tech Solutions Inc.', role: title, duration: '2023 - Present', description: 'Engineered and scaled core digital products, improving system efficiency by 35% and streamlining operational workflows.' },
+                                { company: 'Software Innovations Co.', role: `Junior ${title}`, duration: '2021 - 2023', description: 'Assisted in testing, debugging, and maintaining enterprise applications, ensuring system uptime and code quality.' }
+                            ],
+                            projects: [
+                                { name: `Smart ${title} System`, link: 'https://project-demo.com', description: 'Comprehensive system designed to automate processes and manage large datasets efficiently.' }
+                            ],
+                            certificates: [
+                                { name: `Professional Certification in ${title}`, issuer: 'Global Tech Institute', year: '2025' }
+                            ]
+                        }));
+                    }
+                    setAiLoading(false);
+                    setAiResultBox({ type: 'success', text: lang === 'ar' ? 'تم إنشاء وتحديث محتوى السيرة الذاتية بالكامل بنجاح!' : 'Full resume generated and populated successfully!' });
+                }, 1200);
+            };
+
+            // AI Action: Generate Cover Letter
+            const handleGenerateCoverLetter = () => {
+                setAiLoading(true);
+                setAiResultBox(null);
+                setTimeout(() => {
+                    const title = formData.jobTitle || 'المتخصص';
+                    const name = formData.fullName || 'المتقدم';
+                    const letter = lang === 'ar' ? 
+                        `السادة/ فريق التوظيف المحترمين،\n\nأتقدم إليكم برغبتي القوية في الانضمام لفريقكم الشغوف بوظيفة (${title}). أمتلك خبرة عملية ومؤهلات تمكنني من تقديم إضافة نوعية ومباشرة لمؤسستكم، وتطوير الحلول بما يتوافق مع أهدافكم الاستراتيجية.\n\nيسعدني التواصل معكم لمناقشة التفاصيل في مقابلة شخصية.\n\nمع فائق الاحترام والتقدير،\n${name}` :
+                        `Dear Hiring Team,\n\nI am writing to express my enthusiastic interest in the (${title}) position. With my relevant background and proven skills, I am confident in my ability to make immediate contributions to your team and advance your organization's goals.\n\nI welcome the opportunity to discuss my qualifications further in an interview.\n\nBest Regards,\n${name}`;
+                    
+                    setAiLoading(false);
+                    setAiResultBox({ type: 'text', title: lang === 'ar' ? 'خطاب التغطية الجاهز (Cover Letter):' : 'Generated Cover Letter:', text: letter });
+                }, 900);
+            };
+
+            // AI Action: Tailor to Job Description
+            const handleMatchJobDescription = () => {
+                if(!jobDescInput) {
+                    alert(lang === 'ar' ? 'يرجى لصق نص الوصف الوظيفي أولاً' : 'Please paste job description first');
+                    return;
+                }
+                setAiLoading(true);
+                setAiResultBox(null);
+                setTimeout(() => {
+                    setFormData(prev => ({
+                        ...prev,
+                        summary: lang === 'ar' ? 
+                            `متخصص في ${formData.jobTitle} يتمتع بالمهارات والمتطلبات المذكورة في الشاغر الوظيفي، يمتلك قدرة مثبتة على تنفيذ المهام الموكلة وإدارة الحلول الرقمية بدقة عالية.` :
+                            `Qualified ${formData.jobTitle} tailored for this position, experienced in fulfilling job requirements and driving organizational success.`
+                    }));
+                    setAiLoading(false);
+                    setAiResultBox({ type: 'success', text: lang === 'ar' ? 'تم مطابقة الكلمات المفتاحية وضبط ملخص السيرة طبقاً للإعلان الوظيفي!' : 'Resume keywords matched with job description!' });
+                }, 1000);
+            };
+
+            // AI Action: Auto Translate Resume Content
+            const handleTranslateResume = () => {
+                setAiLoading(true);
+                setAiResultBox(null);
+                setTimeout(() => {
+                    if(lang === 'ar') {
+                        setFormData(prev => ({
+                            ...prev,
+                            fullName: 'Mazen Nasser Al-Mowallad',
+                            jobTitle: 'Programmer & Digital Solutions Developer',
+                            address: 'Saudi Arabia',
+                            summary: 'Passionate programmer and developer specializing in building digital platforms, websites, and mobile applications with focus on software quality and optimal UI/UX.',
+                            skills: 'React, Next.js, Node.js, Tailwind CSS, Python, PostgreSQL, Git, RESTful APIs, Software Architecture'
+                        }));
+                    } else {
+                        setFormData(prev => ({
+                            ...prev,
+                            fullName: 'مازن ناصر المولد',
+                            jobTitle: 'مبرمج ومطور حلول رقمية وتطبيقات',
+                            address: 'المملكة العربية السعودية',
+                            summary: 'مبرمج ومطور شغوف بتطوير المنصات الرقمية والمواقع الإلكترونية الاحترافية وتطبيقات الجوال، أتمتع بمهارات عالية في البرمجة والتصميم وبناء الأنظمة المتوافقة مع معايير جودة البرمجيات.',
+                            skills: 'React, Next.js, Node.js, Tailwind CSS, Python, PostgreSQL, Git, RESTful APIs, UI/UX Design'
+                        }));
+                    }
+                    setAiLoading(false);
+                    setAiResultBox({ type: 'success', text: lang === 'ar' ? 'تم ترجمة العناصر الأساسية بالسيرة الذاتية بنجاح!' : 'Key elements translated successfully!' });
+                }, 800);
+            };
+
+            // AI Logic Handlers
+            const handleGenerateSummary = () => {
+                setAiLoading(true);
+                setAiResultBox(null);
+                setTimeout(() => {
+                    let result = '';
+                    const title = formData.jobTitle || 'المتخصص';
+                    if (lang === 'ar') {
+                        if (summaryStyle === 'style1') {
+                            result = `متخصص وخبير في مجال ${title} يتمتع بخلفية برمجية وتقنية قوية. يمتلك قدرة مثبتة على قيادة وتطوير الحلول الرقمية، وتصميم الأنظمة القابلة للتوسع، مع إلتزام تام بأعلى معايير الجودة والجداول الزمنية المحدد للمشاريع.`;
+                        } else if (summaryStyle === 'style2') {
+                            result = `محترف نتائج في ${title}، ساهم في تحسين الكفاءة التشغيلية وتطوير تطبيقات عالية الأداء. يركز على تقديم قيمة مضافة من خلال توظيف التقنيات الحديثة وتحويل متطلبات العمل إلى حلول برمجية مبتكرة وعملية.`;
+                        } else {
+                            result = `${title} شغوف بالابتكار وتطوير البرمجيات. يمتلك خبرة ممتازة في المهارات التقنية الحديثة وإدارة المشاريع الرقمية من الفكرة حتى التنفيذ النهائى.`;
+                        }
+                    } else {
+                        if (summaryStyle === 'style1') {
+                            result = `Accomplished ${title} with a strong technical background and a proven track record in leading digital solution developments, designing scalable systems, and delivering quality projects on time.`;
+                        } else if (summaryStyle === 'style2') {
+                            result = `Results-oriented ${title} focused on improving operational efficiency and building high-performance applications. Adept at transforming business requirements into innovative technical solutions.`;
+                        } else {
+                            result = `Passionate ${title} skilled in modern web development, problem-solving, and digital transformation. Driven by technical innovation and best engineering practices.`;
+                        }
+                    }
+                    setFormData(prev => ({ ...prev, summary: result }));
+                    setAiLoading(false);
+                    setAiResultBox({ type: 'success', text: lang === 'ar' ? 'تم تطبيق الملخص المهني الجديد بنجاح!' : 'New professional summary applied!' });
+                }, 800);
+            };
+
+            const handleEnhanceExperiences = () => {
+                setAiLoading(true);
+                setAiResultBox(null);
+                setTimeout(() => {
+                    const enhanced = formData.experiences.map(exp => {
+                        const role = exp.role || 'الموظف';
+                        const desc = lang === 'ar' ?
+                            `قيادة وتطبيق أفضل الممارسات في ${role}، وتطوير الآليات التشغيلية البرمجية مما أدى لرفع الكفاءة بنسبة 30% وتقليل الأخطاء التقنية مع ضمان الامتثال لمعايير الجودة العالمية.` :
+                            `Led and implemented best practices as a ${role}, optimizing core workflows and increasing overall efficiency by 30% while maintaining standard code compliance.`;
+                        return { ...exp, description: desc };
+                    });
+                    setFormData(prev => ({ ...prev, experiences: enhanced }));
+                    setAiLoading(false);
+                    setAiResultBox({ type: 'success', text: lang === 'ar' ? 'تم إعادة صياغة جميع الخبرات بكلمات قوية متوافقة مع ATS!' : 'Experiences enhanced with powerful action verbs for ATS!' });
+                }, 900);
+            };
+
+            const handleGenerateSkills = () => {
+                setAiLoading(true);
+                setAiResultBox(null);
+                setTimeout(() => {
+                    const skillsList = lang === 'ar' ? 
+                        "JavaScript, React.js, Node.js, Python, Tailwind CSS, Git & GitHub, RESTful APIs, SQL Databases, حل المشكلات التقنية, إدارة المشاريع, العمل الجماعي, التفكير التحليلي" :
+                        "JavaScript, React.js, Node.js, Python, Tailwind CSS, Git & GitHub, RESTful APIs, SQL Databases, Problem Solving, Agile Methodologies, Project Management, Critical Thinking";
+                    setFormData(prev => ({ ...prev, skills: skillsList }));
+                    setAiLoading(false);
+                    setAiResultBox({ type: 'success', text: lang === 'ar' ? 'تم إضافة حزمة مهارات شاملة ومناسبة لمسمّاك الوظيفي!' : 'Skillset updated with relevant technical and soft skills!' });
+                }, 700);
+            };
+
+            const handleAuditResume = () => {
+                setAiLoading(true);
+                setAiResultBox(null);
+                setTimeout(() => {
+                    let score = 90;
+                    let tips = [];
+                    if (!formData.summary || formData.summary.length < 50) { score -= 15; tips.push(lang === 'ar' ? "الملخص المهني قصير جداً، يفضل توسيعه." : "Summary is too short."); }
+                    if (formData.experiences.length === 0) { score -= 20; tips.push(lang === 'ar' ? "أضف خبرة عملية واحدة على الأقل." : "Add at least one work experience."); }
+                    if (!formData.skills || formData.skills.length < 20) { score -= 10; tips.push(lang === 'ar' ? "أضف المزيد من المهارات المحددة." : "Add more specific skills."); }
+                    
+                    setAiLoading(false);
+                    setAiResultBox({
+                        type: 'audit',
+                        score: score,
+                        tips: tips.length > 0 ? tips : [lang === 'ar' ? 'سيرتك الذاتية ممتازة ومكتملة بجميع المعايير!' : 'Your resume looks great!']
+                    });
+                }, 1000);
+            };
+
+            const handleGenerateInterviewQuestions = () => {
+                setAiLoading(true);
+                setAiResultBox(null);
+                setTimeout(() => {
+                    const role = formData.jobTitle || 'هذا المسمى';
+                    const questions = lang === 'ar' ? [
+                        `1. كيف تتعامل مع التحديات التقنية غير المتوقعة في مجال ${role}؟`,
+                        `2. اذكر مشروعاً برمجياً أو تنفيذياً قمت فيه بتحسين كفاءة العمل بشكل ملحوظ؟`,
+                        `3. كيف تضمن جودة المخرجات والالتزام بالموعد النهائي تحت الضغط؟`
+                    ] : [
+                        `1. How do you handle unexpected technical challenges as a ${role}?`,
+                        `2. Describe a project where you significantly improved operational efficiency.`,
+                        `3. How do you manage project deadlines and ensure quality under pressure?`
+                    ];
+                    setAiLoading(false);
+                    setAiResultBox({ type: 'interview', questions: questions });
+                }, 800);
+            };
+
+            const toggleLanguage = () => {
+                const nextLang = lang === 'ar' ? 'en' : 'ar';
+                setLang(nextLang);
+                document.documentElement.dir = nextLang === 'ar' ? 'rtl' : 'ltr';
+                document.documentElement.lang = nextLang;
+            };
+
+            const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+            const handleArrayChange = (category, index, field, value) => {
+                const updated = [...formData[category]];
+                updated[index][field] = value;
+                setFormData({ ...formData, [category]: updated });
+            };
+
+            const addItem = (category, template) => {
+                setFormData({ ...formData, [category]: [...formData[category], template] });
+            };
+
+            const removeItem = (category, index) => {
+                const updated = formData[category].filter((_, i) => i !== index);
+                setFormData({ ...formData, [category]: updated });
+            };
+
+            const downloadPDF = () => {
+                const element = document.getElementById('resume-preview');
+                const opt = {
+                    margin:       0,
+                    filename:     `${formData.fullName || 'Resume'}_ATS.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+                html2pdf().set(opt).from(element).save();
+            };
+
+            const currentColor = themeColors[selectedColor];
+
+            return (
+                <div class="min-h-screen flex flex-col justify-between">
+                    {/* Header */}
+                    <header class="bg-slate-900 text-white p-4 shadow-md sticky top-0 z-50">
+                        <div class="container mx-auto flex flex-wrap justify-between items-center gap-2">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-indigo-600 text-white w-10 h-10 rounded-lg flex items-center justify-center font-black text-xl shadow">مـ</div>
+                                <div>
+                                    <h1 class="text-lg font-bold">{t.title}</h1>
+                                    <p class="text-xs text-indigo-300">{t.subtitle}</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onClick={toggleLanguage} class="bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition border border-slate-700">
+                                    <i class="fa-solid fa-globe mr-1"></i> {t.langBtn}
+                                </button>
+                                <button onClick={downloadPDF} class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-lg transition flex items-center gap-2">
+                                    <i class="fa-solid fa-file-pdf"></i> {t.downloadPdf}
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Workspace */}
+                    <main class="container mx-auto p-4 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 my-2">
+                        
+                        {/* Editor Forms */}
+                        <div class="lg:col-span-5 bg-white p-5 rounded-xl shadow-sm border border-slate-200 max-h-[85vh] flex flex-col">
+                            
+                            <div class="flex border-b overflow-x-auto gap-1 pb-2 mb-4 text-xs font-bold">
+                                {[
+                                    { id: 'ai', label: t.aiTab, icon: 'fa-wand-magic-sparkles' },
+                                    { id: 'personal', label: t.personalTab, icon: 'fa-user' },
+                                    { id: 'exp', label: t.expTab, icon: 'fa-briefcase' },
+                                    { id: 'projects', label: t.projectsTab, icon: 'fa-code' },
+                                    { id: 'more', label: t.moreTab, icon: 'fa-star' },
+                                    { id: 'extra', label: t.extraTab, icon: 'fa-award' },
+                                    { id: 'design', label: t.designTab, icon: 'fa-palette' }
+                                ].map(tab => (
+                                    <button 
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)} 
+                                        class={`px-3 py-2 rounded-lg flex items-center gap-1.5 whitespace-nowrap transition ${activeTab === tab.id ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                                    >
+                                        <i class={`fa-solid ${tab.icon}`}></i> {tab.label}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div class="overflow-y-auto flex-grow pr-1 space-y-4">
+                                {activeTab === 'ai' && (
+                                    <div class="space-y-3">
+                                        <div class="bg-indigo-50 border border-indigo-200 p-3 rounded-lg">
+                                            <h3 class="text-sm font-bold text-indigo-900 flex items-center gap-2">
+                                                <i class="fa-solid fa-robot text-indigo-600"></i>
+                                                {t.aiTitle}
+                                            </h3>
+                                            <p class="text-xs text-slate-600 mt-1">{t.aiSub}</p>
+                                        </div>
+
+                                        {/* AI Response Display */}
+                                        {aiResultBox && (
+                                            <div class="p-3 rounded-lg border text-xs space-y-2 bg-slate-50 border-slate-300">
+                                                {aiResultBox.type === 'success' && (
+                                                    <p class="text-emerald-700 font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> {aiResultBox.text}</p>
+                                                )}
+                                                {aiResultBox.type === 'text' && (
+                                                    <div>
+                                                        <p class="font-bold text-indigo-900 mb-1">{aiResultBox.title}</p>
+                                                        <textarea readOnly rows="5" class="w-full p-2 border rounded text-xs bg-white">{aiResultBox.text}</textarea>
+                                                    </div>
+                                                )}
+                                                {aiResultBox.type === 'audit' && (
+                                                    <div>
+                                                        <div class="flex justify-between items-center mb-1">
+                                                            <span class="font-bold">{lang === 'ar' ? 'نسبة الجودة والتوافق:' : 'Quality Score:'}</span>
+                                                            <span class="font-black text-indigo-600">{aiResultBox.score}%</span>
+                                                        </div>
+                                                        <ul class="list-disc pr-4 text-slate-700 space-y-1">
+                                                            {aiResultBox.tips.map((tip, idx) => <li key={idx}>{tip}</li>)}
+                                                        </ul>
+                                                    </div>
+                                                )}
+                                                {aiResultBox.type === 'interview' && (
+                                                    <div class="space-y-1">
+                                                        <p class="font-bold text-indigo-900 mb-1">{lang === 'ar' ? 'أسئلة مقابلة مقترحة لمسمّاك:' : 'Suggested Interview Questions:'}</p>
+                                                        {aiResultBox.questions.map((q, idx) => <p key={idx} class="text-slate-700 font-semibold">{q}</p>)}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {/* Master AI Tool: Generate Complete Resume */}
+                                        <button 
+                                            onClick={handleGenerateFullResume} 
+                                            disabled={aiLoading} 
+                                            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-xs font-black py-3 rounded-lg shadow transition flex items-center justify-center gap-2"
+                                        >
+                                            {aiLoading ? <i class="fa-solid fa-spinner fa-spin"></i> : <i class="fa-solid fa-wand-magic-sparkles"></i>}
+                                            {t.btnFullResume}
+                                        </button>
+
+                                        {/* Cover Letter & Match Tools */}
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <button 
+                                                onClick={handleGenerateCoverLetter} 
+                                                disabled={aiLoading} 
+                                                class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold p-2 rounded-lg transition"
+                                            >
+                                                <i class="fa-solid fa-envelope-open-text mb-1 block text-sm"></i>
+                                                {t.btnCoverLetter}
+                                            </button>
+                                            <button 
+                                                onClick={handleTranslateResume} 
+                                                disabled={aiLoading} 
+                                                class="bg-teal-700 hover:bg-teal-600 text-white text-xs font-bold p-2 rounded-lg transition"
+                                            >
+                                                <i class="fa-solid fa-language mb-1 block text-sm"></i>
+                                                {t.btnTranslate}
+                                            </button>
+                                        </div>
+
+                                        {/* Tailor to Job Description */}
+                                        <div class="border p-2.5 rounded-lg bg-slate-50 space-y-2">
+                                            <textarea 
+                                                value={jobDescInput} 
+                                                onChange={(e) => setJobDescInput(e.target.value)} 
+                                                placeholder={t.jobDescPlaceholder} 
+                                                rows="2" 
+                                                class="w-full p-2 border rounded text-xs"
+                                            ></textarea>
+                                            <button 
+                                                onClick={handleMatchJobDescription} 
+                                                disabled={aiLoading} 
+                                                class="w-full bg-blue-700 hover:bg-blue-600 text-white text-xs font-bold py-1.5 rounded transition"
+                                            >
+                                                {t.btnMatchJob}
+                                            </button>
+                                        </div>
+
+                                        {/* Summary Style Generator */}
+                                        <div class="border p-2.5 rounded-lg bg-slate-50 space-y-2">
+                                            <label class="block text-xs font-bold text-slate-800">{t.summaryStyle}</label>
+                                            <select value={summaryStyle} onChange={(e) => setSummaryStyle(e.target.value)} class="p-1.5 border rounded text-xs w-full">
+                                                <option value="style1">{t.style1}</option>
+                                                <option value="style2">{t.style2}</option>
+                                                <option value="style3">{t.style3}</option>
+                                            </select>
+                                            <button 
+                                                onClick={handleGenerateSummary} 
+                                                disabled={aiLoading} 
+                                                class="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-1.5 rounded transition"
+                                            >
+                                                {t.btnGenSummary}
+                                            </button>
+                                        </div>
+
+                                        {/* Action buttons */}
+                                        <button 
+                                            onClick={handleEnhanceExperiences} 
+                                            disabled={aiLoading} 
+                                            class="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-2 rounded-lg transition"
+                                        >
+                                            {t.btnEnhanceExp}
+                                        </button>
+
+                                        <button 
+                                            onClick={handleGenerateSkills} 
+                                            disabled={aiLoading} 
+                                            class="w-full bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold py-2 rounded-lg transition"
+                                        >
+                                            {t.btnGenSkills}
+                                        </button>
+
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <button 
+                                                onClick={handleAuditResume} 
+                                                disabled={aiLoading} 
+                                                class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold p-2 rounded-lg transition text-center"
+                                            >
+                                                <i class="fa-solid fa-magnifying-glass-chart mb-1 block text-sm"></i>
+                                                {t.btnCheckResume}
+                                            </button>
+
+                                            <button 
+                                                onClick={handleGenerateInterviewQuestions} 
+                                                disabled={aiLoading} 
+                                                class="bg-purple-700 hover:bg-purple-600 text-white text-xs font-bold p-2 rounded-lg transition text-center"
+                                            >
+                                                <i class="fa-solid fa-comments mb-1 block text-sm"></i>
+                                                {t.btnInterviewQs}
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {activeTab === 'personal' && (
+                                    <div class="space-y-3">
+                                        <h3 class="text-sm font-bold text-indigo-900 border-b pb-1">{t.personalInfo}</h3>
+                                        <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} placeholder={t.fullName} class="p-2 border rounded-lg text-xs w-full" />
+                                        <input type="text" name="jobTitle" value={formData.jobTitle} onChange={handleChange} placeholder={t.jobTitle} class="p-2 border rounded-lg text-xs w-full" />
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder={t.email} class="p-2 border rounded-lg text-xs w-full" />
+                                            <input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder={t.phone} class="p-2 border rounded-lg text-xs w-full" />
+                                        </div>
+                                        <input type="text" name="address" value={formData.address} onChange={handleChange} placeholder={t.address} class="p-2 border rounded-lg text-xs w-full" />
+                                        <div class="grid grid-cols-3 gap-2">
+                                            <input type="text" name="linkedin" value={formData.linkedin} onChange={handleChange} placeholder={t.linkedin} class="p-2 border rounded-lg text-xs w-full" />
+                                            <input type="text" name="github" value={formData.github} onChange={handleChange} placeholder={t.github} class="p-2 border rounded-lg text-xs w-full" />
+                                            <input type="text" name="website" value={formData.website} onChange={handleChange} placeholder={t.website} class="p-2 border rounded-lg text-xs w-full" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold mb-1">{t.summary}</label>
+                                            <textarea name="summary" value={formData.summary} onChange={handleChange} rows="3" class="p-2 border rounded-lg text-xs w-full"></textarea>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {activeTab === 'exp' && (
+                                    <div class="space-y-4">
+                                        <div>
+                                            <div class="flex justify-between items-center mb-2">
+                                                <h3 class="text-sm font-bold text-indigo-900">{t.experience}</h3>
+                                                <button onClick={() => addItem('experiences', { company: '', role: '', duration: '', description: '' })} class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-1 rounded">{t.addExperience}</button>
+                                            </div>
+                                            {formData.experiences.map((item, i) => (
+                                                <div key={i} class="p-3 border rounded-lg bg-slate-50 relative space-y-2 mb-2">
+                                                    <button onClick={() => removeItem('experiences', i)} class="absolute left-2 top-2 text-rose-500 text-xs"><i class="fa-solid fa-trash"></i></button>
+                                                    <input type="text" placeholder={t.role} value={item.role} onChange={(e) => handleArrayChange('experiences', i, 'role', e.target.value)} class="p-1.5 border rounded text-xs w-full" />
+                                                    <div class="grid grid-cols-2 gap-2">
+                                                        <input type="text" placeholder={t.company} value={item.company} onChange={(e) => handleArrayChange('experiences', i, 'company', e.target.value)} class="p-1.5 border rounded text-xs" />
+                                                        <input type="text" placeholder={t.duration} value={item.duration} onChange={(e) => handleArrayChange('experiences', i, 'duration', e.target.value)} class="p-1.5 border rounded text-xs" />
+                                                    </div>
+                                                    <textarea placeholder={t.description} value={item.description} onChange={(e) => handleArrayChange('experiences', i, 'description', e.target.value)} rows="2" class="p-1.5 border rounded text-xs w-full"></textarea>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div class="border-t pt-3">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <h3 class="text-sm font-bold text-indigo-900">{t.education}</h3>
+                                                <button onClick={() => addItem('educations', { degree: '', institution: '', duration: '' })} class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-1 rounded">{t.addEducation}</button>
+                                            </div>
+                                            {formData.educations.map((item, i) => (
+                                                <div key={i} class="p-3 border rounded-lg bg-slate-50 relative space-y-2 mb-2">
+                                                    <button onClick={() => removeItem('educations', i)} class="absolute left-2 top-2 text-rose-500 text-xs"><i class="fa-solid fa-trash"></i></button>
+                                                    <input type="text" placeholder={t.degree} value={item.degree} onChange={(e) => handleArrayChange('educations', i, 'degree', e.target.value)} class="p-1.5 border rounded text-xs w-full" />
+                                                    <div class="grid grid-cols-2 gap-2">
+                                                        <input type="text" placeholder={t.institution} value={item.institution} onChange={(e) => handleArrayChange('educations', i, 'institution', e.target.value)} class="p-1.5 border rounded text-xs" />
+                                                        <input type="text" placeholder={t.duration} value={item.duration} onChange={(e) => handleArrayChange('educations', i, 'duration', e.target.value)} class="p-1.5 border rounded text-xs" />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {activeTab === 'projects' && (
+                                    <div class="space-y-4">
+                                        <div>
+                                            <div class="flex justify-between items-center mb-2">
+                                                <h3 class="text-sm font-bold text-indigo-900">{t.projects}</h3>
+                                                <button onClick={() => addItem('projects', { name: '', link: '', description: '' })} class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-1 rounded">{t.addProject}</button>
+                                            </div>
+                                            {formData.projects.map((item, i) => (
+                                                <div key={i} class="p-3 border rounded-lg bg-slate-50 relative space-y-2 mb-2">
+                                                    <button onClick={() => removeItem('projects', i)} class="absolute left-2 top-2 text-rose-500 text-xs"><i class="fa-solid fa-trash"></i></button>
+                                                    <input type="text" placeholder={t.projName} value={item.name} onChange={(e) => handleArrayChange('projects', i, 'name', e.target.value)} class="p-1.5 border rounded text-xs w-full" />
+                                                    <input type="text" placeholder={t.projLink} value={item.link} onChange={(e) => handleArrayChange('projects', i, 'link', e.target.value)} class="p-1.5 border rounded text-xs w-full" />
+                                                    <textarea placeholder={t.description} value={item.description} onChange={(e) => handleArrayChange('projects', i, 'description', e.target.value)} rows="2" class="p-1.5 border rounded text-xs w-full"></textarea>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div class="border-t pt-3">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <h3 class="text-sm font-bold text-indigo-900">{t.certs}</h3>
+                                                <button onClick={() => addItem('certificates', { name: '', issuer: '', year: '' })} class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-1 rounded">{t.addCert}</button>
+                                            </div>
+                                            {formData.certificates.map((item, i) => (
+                                                <div key={i} class="p-2 border rounded bg-slate-50 relative space-y-1 mb-2">
+                                                    <button onClick={() => removeItem('certificates', i)} class="absolute left-2 top-2 text-rose-500 text-xs"><i class="fa-solid fa-trash"></i></button>
+                                                    <input type="text" placeholder={t.certName} value={item.name} onChange={(e) => handleArrayChange('certificates', i, 'name', e.target.value)} class="p-1 border rounded text-xs w-full" />
+                                                    <div class="grid grid-cols-2 gap-2">
+                                                        <input type="text" placeholder={t.issuer} value={item.issuer} onChange={(e) => handleArrayChange('certificates', i, 'issuer', e.target.value)} class="p-1 border rounded text-xs" />
+                                                        <input type="text" placeholder="السنة" value={item.year} onChange={(e) => handleArrayChange('certificates', i, 'year', e.target.value)} class="p-1 border rounded text-xs" />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {activeTab === 'more' && (
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-bold mb-1">{t.skills}</label>
+                                            <textarea name="skills" value={formData.skills} onChange={handleChange} rows="3" class="p-2 border rounded-lg text-xs w-full"></textarea>
+                                        </div>
+
+                                        <div class="border-t pt-3">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <h3 class="text-sm font-bold text-indigo-900">{t.languages}</h3>
+                                                <button onClick={() => addItem('languagesList', { name: '', level: '' })} class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-1 rounded">{t.addLang}</button>
+                                            </div>
+                                            {formData.languagesList.map((item, i) => (
+                                                <div key={i} class="p-2 border rounded bg-slate-50 relative space-y-1 mb-2">
+                                                    <button onClick={() => removeItem('languagesList', i)} class="absolute left-2 top-2 text-rose-500 text-xs"><i class="fa-solid fa-trash"></i></button>
+                                                    <div class="grid grid-cols-2 gap-2">
+                                                        <input type="text" placeholder={t.langName} value={item.name} onChange={(e) => handleArrayChange('languagesList', i, 'name', e.target.value)} class="p-1 border rounded text-xs" />
+                                                        <input type="text" placeholder={t.langLevel} value={item.level} onChange={(e) => handleArrayChange('languagesList', i, 'level', e.target.value)} class="p-1 border rounded text-xs" />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {activeTab === 'extra' && (
+                                    <div class="space-y-4">
+                                        <div>
+                                            <div class="flex justify-between items-center mb-2">
+                                                <h3 class="text-sm font-bold text-indigo-900">{t.achievements}</h3>
+                                                <button onClick={() => addItem('achievements', { title: '', details: '' })} class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-1 rounded">{t.addAch}</button>
+                                            </div>
+                                            {formData.achievements.map((item, i) => (
+                                                <div key={i} class="p-2 border rounded bg-slate-50 relative space-y-1 mb-2">
+                                                    <button onClick={() => removeItem('achievements', i)} class="absolute left-2 top-2 text-rose-500 text-xs"><i class="fa-solid fa-trash"></i></button>
+                                                    <input type="text" placeholder={t.achTitle} value={item.title} onChange={(e) => handleArrayChange('achievements', i, 'title', e.target.value)} class="p-1 border rounded text-xs w-full" />
+                                                    <input type="text" placeholder={t.achDesc} value={item.details} onChange={(e) => handleArrayChange('achievements', i, 'details', e.target.value)} class="p-1 border rounded text-xs w-full" />
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div class="border-t pt-3">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <h3 class="text-sm font-bold text-indigo-900">{t.references}</h3>
+                                                <button onClick={() => addItem('references', { name: '', role: '', contact: '' })} class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-1 rounded">{t.addRef}</button>
+                                            </div>
+                                            {formData.references.map((item, i) => (
+                                                <div key={i} class="p-2 border rounded bg-slate-50 relative space-y-1 mb-2">
+                                                    <button onClick={() => removeItem('references', i)} class="absolute left-2 top-2 text-rose-500 text-xs"><i class="fa-solid fa-trash"></i></button>
+                                                    <input type="text" placeholder={t.refName} value={item.name} onChange={(e) => handleArrayChange('references', i, 'name', e.target.value)} class="p-1 border rounded text-xs w-full" />
+                                                    <div class="grid grid-cols-2 gap-2">
+                                                        <input type="text" placeholder={t.refRole} value={item.role} onChange={(e) => handleArrayChange('references', i, 'role', e.target.value)} class="p-1 border rounded text-xs" />
+                                                        <input type="text" placeholder={t.refContact} value={item.contact} onChange={(e) => handleArrayChange('references', i, 'contact', e.target.value)} class="p-1 border rounded text-xs" />
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {activeTab === 'design' && (
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-bold mb-2">{t.chooseTemplate}</label>
+                                            <div class="grid grid-cols-1 gap-2">
+                                                {[
+                                                    { id: 'layout1', name: '1. ATS الكلاسيكي القياسي (Standard ATS)', desc: 'أعلى نسبة توافق مع كافة أنظمة القراءة والفرز الآلي' },
+                                                    { id: 'layout2', name: '2. ATS العصري المؤطر (Modern Header ATS)', desc: 'ترويسة مميزة بدون تقليل نسبة توافق الفرز' },
+                                                    { id: 'layout3', name: '3. ATS الموزع جانباً (Split Column ATS)', desc: 'توزيع سلس يبرز المهارات والمعلومات بشكل مميز' },
+                                                    { id: 'layout4', name: '4. ATS الأكاديمي النظيف (Clean Academic)', desc: 'تصميم رسمي ملائم للوظائف القيادية والأكاديمية' },
+                                                    { id: 'layout5', name: '5. ATS المطورين (Tech Minimalist)', desc: 'تركيز مكثف على المشاريع والتقنيات المستعملة' }
+                                                ].map(tmpl => (
+                                                    <div 
+                                                        key={tmpl.id} 
+                                                        onClick={() => setSelectedLayout(tmpl.id)} 
+                                                        class={`p-2.5 border rounded-lg cursor-pointer transition ${selectedLayout === tmpl.id ? 'border-indigo-600 bg-indigo-50' : 'hover:bg-slate-50'}`}
+                                                    >
+                                                        <p class="text-xs font-bold text-slate-800">{tmpl.name}</p>
+                                                        <p class="text-[10px] text-slate-500">{tmpl.desc}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-xs font-bold mb-2">{t.chooseColor}</label>
+                                            <div class="flex flex-wrap gap-2">
+                                                {Object.keys(themeColors).map(colorKey => (
+                                                    <button
+                                                        key={colorKey}
+                                                        onClick={() => setSelectedColor(colorKey)}
+                                                        class={`w-7 h-7 rounded-full border-2 transition ${selectedColor === colorKey ? 'scale-110 border-slate-900 shadow' : 'border-transparent'}`}
+                                                        style={{ backgroundColor: themeColors[colorKey].primary }}
+                                                    ></button>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-2 border-t pt-3">
+                                            <div>
+                                                <label class="block text-xs font-bold mb-1">{t.chooseFont}</label>
+                                                <select value={selectedFont} onChange={(e) => setSelectedFont(e.target.value)} class="p-1.5 border rounded text-xs w-full">
+                                                    <option value="font-cairo">Cairo (رسمي وجذاب)</option>
+                                                    <option value="font-tajawal">Tajawal (عصري واكتظاظ ممتاز)</option>
+                                                    <option value="font-inter">Inter / Arial (قياسي)</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-bold mb-1">{t.chooseFontSize}</label>
+                                                <select value={fontSize} onChange={(e) => setFontSize(e.target.value)} class="p-1.5 border rounded text-xs w-full">
+                                                    <option value="text-[10px]">صغير جداً (مكثف)</option>
+                                                    <option value="text-xs">متوسط (قياسي)</option>
+                                                    <option value="text-sm">كبير (واضح)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Live Resume Preview (A4 Paper) */}
+                        <div class="lg:col-span-7 overflow-x-auto flex justify-center items-start">
+                            <div id="resume-preview" class={`a4-paper bg-white text-slate-800 ${selectedFont} ${fontSize}`}>
+                                
+                                {/* HEADER */}
+                                {selectedLayout === 'layout2' ? (
+                                    <div class="p-4 rounded-lg mb-4 text-white" style={{ backgroundColor: currentColor.primary }}>
+                                        <h1 class="text-2xl font-black uppercase tracking-wide">{formData.fullName}</h1>
+                                        <p class="text-xs opacity-90 font-semibold">{formData.jobTitle}</p>
+                                        <div class="flex flex-wrap gap-x-3 gap-y-1 text-[10px] mt-2 opacity-80">
+                                            {formData.email && <span><i class="fa-solid fa-envelope"></i> {formData.email}</span>}
+                                            {formData.phone && <span><i class="fa-solid fa-phone"></i> {formData.phone}</span>}
+                                            {formData.address && <span><i class="fa-solid fa-location-dot"></i> {formData.address}</span>}
+                                            {formData.linkedin && <span><i class="fa-brands fa-linkedin"></i> {formData.linkedin}</span>}
+                                            {formData.github && <span><i class="fa-brands fa-github"></i> {formData.github}</span>}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div class="text-center border-b pb-3 mb-4">
+                                        <h1 class="text-2xl font-black uppercase tracking-wide" style={{ color: currentColor.primary }}>{formData.fullName}</h1>
+                                        <p class="text-xs font-bold text-slate-700 mt-0.5">{formData.jobTitle}</p>
+                                        <div class="flex flex-wrap justify-center gap-x-3 gap-y-1 text-[11px] text-slate-600 mt-1.5">
+                                            {formData.email && <span>{formData.email}</span>}
+                                            {formData.phone && <span>| {formData.phone}</span>}
+                                            {formData.address && <span>| {formData.address}</span>}
+                                            {formData.linkedin && <span>| {formData.linkedin}</span>}
+                                            {formData.github && <span>| {formData.github}</span>}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* MAIN BODY LAYOUT */}
+                                {selectedLayout !== 'layout3' ? (
+                                    <div class="space-y-3.5">
+                                        {formData.summary && (
+                                            <div>
+                                                <h2 class="font-bold uppercase border-b pb-0.5 mb-1" style={{ color: currentColor.primary }}>{t.summary}</h2>
+                                                <p class="text-slate-700 leading-relaxed">{formData.summary}</p>
+                                            </div>
+                                        )}
+
+                                        {formData.experiences.length > 0 && (
+                                            <div>
+                                                <h2 class="font-bold uppercase border-b pb-0.5 mb-1.5" style={{ color: currentColor.primary }}>{t.experience}</h2>
+                                                {formData.experiences.map((exp, i) => (
+                                                    <div key={i} class="mb-2">
+                                                        <div class="flex justify-between font-bold">
+                                                            <span>{exp.role} - <span style={{ color: currentColor.primary }}>{exp.company}</span></span>
+                                                            <span class="text-slate-500 font-normal">{exp.duration}</span>
+                                                        </div>
+                                                        <p class="text-slate-600 mt-0.5">{exp.description}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {formData.projects.length > 0 && (
+                                            <div>
+                                                <h2 class="font-bold uppercase border-b pb-0.5 mb-1.5" style={{ color: currentColor.primary }}>{t.projects}</h2>
+                                                {formData.projects.map((proj, i) => (
+                                                    <div key={i} class="mb-1.5">
+                                                        <div class="flex justify-between font-bold">
+                                                            <span>{proj.name}</span>
+                                                            {proj.link && <span class="text-slate-500 font-normal">{proj.link}</span>}
+                                                        </div>
+                                                        <p class="text-slate-600">{proj.description}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {formData.educations.length > 0 && (
+                                            <div>
+                                                <h2 class="font-bold uppercase border-b pb-0.5 mb-1" style={{ color: currentColor.primary }}>{t.education}</h2>
+                                                {formData.educations.map((edu, i) => (
+                                                    <div key={i} class="flex justify-between mb-1">
+                                                        <span><strong>{edu.degree}</strong> - {edu.institution}</span>
+                                                        <span class="text-slate-500">{edu.duration}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {formData.skills && (
+                                            <div>
+                                                <h2 class="font-bold uppercase border-b pb-0.5 mb-1" style={{ color: currentColor.primary }}>{t.skills}</h2>
+                                                <p class="text-slate-700">{formData.skills}</p>
+                                            </div>
+                                        )}
+
+                                        <div class="grid grid-cols-2 gap-4">
+                                            {formData.languagesList.length > 0 && (
+                                                <div>
+                                                    <h2 class="font-bold uppercase border-b pb-0.5 mb-1" style={{ color: currentColor.primary }}>{t.languages}</h2>
+                                                    {formData.languagesList.map((langItem, i) => (
+                                                        <p key={i} class="text-slate-700"><strong>{langItem.name}:</strong> {langItem.level}</p>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            {formData.certificates.length > 0 && (
+                                                <div>
+                                                    <h2 class="font-bold uppercase border-b pb-0.5 mb-1" style={{ color: currentColor.primary }}>{t.certs}</h2>
+                                                    {formData.certificates.map((cert, i) => (
+                                                        <p key={i} class="text-slate-700"><strong>{cert.name}</strong> - {cert.issuer} ({cert.year})</p>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {formData.achievements.length > 0 && (
+                                            <div>
+                                                <h2 class="font-bold uppercase border-b pb-0.5 mb-1" style={{ color: currentColor.primary }}>{t.achievements}</h2>
+                                                {formData.achievements.map((ach, i) => (
+                                                    <p key={i} class="text-slate-700"><strong>{ach.title}:</strong> {ach.details}</p>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    /* SPLIT LAYOUT */
+                                    <div class="grid grid-cols-12 gap-4">
+                                        <div class="col-span-4 border-r pr-3 space-y-3">
+                                            {formData.skills && (
+                                                <div>
+                                                    <h3 class="font-bold uppercase border-b pb-0.5 mb-1" style={{ color: currentColor.primary }}>{t.skills}</h3>
+                                                    <p class="text-slate-700">{formData.skills}</p>
+                                                </div>
+                                            )}
+
+                                            {formData.languagesList.length > 0 && (
+                                                <div>
+                                                    <h3 class="font-bold uppercase border-b pb-0.5 mb-1" style={{ color: currentColor.primary }}>{t.languages}</h3>
+                                                    {formData.languagesList.map((langItem, i) => (
+                                                        <p key={i} class="text-slate-700"><strong>{langItem.name}</strong><br/>{langItem.level}</p>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            {formData.certificates.length > 0 && (
+                                                <div>
+                                                    <h3 class="font-bold uppercase border-b pb-0.5 mb-1" style={{ color: currentColor.primary }}>{t.certs}</h3>
+                                                    {formData.certificates.map((cert, i) => (
+                                                        <p key={i} class="text-slate-700 mb-1"><strong>{cert.name}</strong><br/>{cert.issuer}</p>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div class="col-span-8 space-y-3">
+                                            {formData.summary && (
+                                                <div>
+                                                    <h2 class="font-bold uppercase border-b pb-0.5 mb-1" style={{ color: currentColor.primary }}>{t.summary}</h2>
+                                                    <p class="text-slate-700">{formData.summary}</p>
+                                                </div>
+                                            )}
+
+                                            {formData.experiences.length > 0 && (
+                                                <div>
+                                                    <h2 class="font-bold uppercase border-b pb-0.5 mb-1" style={{ color: currentColor.primary }}>{t.experience}</h2>
+                                                    {formData.experiences.map((exp, i) => (
+                                                        <div key={i} class="mb-2">
+                                                            <p class="font-bold">{exp.role} - <span style={{ color: currentColor.primary }}>{exp.company}</span></p>
+                                                            <p class="text-slate-500 font-normal">{exp.duration}</p>
+                                                            <p class="text-slate-600 mt-0.5">{exp.description}</p>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                            {formData.educations.length > 0 && (
+                                                <div>
+                                                    <h2 class="font-bold uppercase border-b pb-0.5 mb-1" style={{ color: currentColor.primary }}>{t.education}</h2>
+                                                    {formData.educations.map((edu, i) => (
+                                                        <div key={i} class="mb-1">
+                                                            <p class="font-bold">{edu.degree}</p>
+                                                            <p class="text-slate-500">{edu.institution} | {edu.duration}</p>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                            </div>
+                        </div>
+
+                    </main>
+
+                    {/* Footer */}
+                    <footer class="bg-slate-900 text-slate-400 text-center py-3 text-xs border-t border-slate-800">
+                        {t.footer}
+                    </footer>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
