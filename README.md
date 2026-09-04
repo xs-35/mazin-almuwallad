@@ -198,9 +198,9 @@ Opera ✅ كامل
 🎓 المسمى مبرمج ومطور حلول رقمية وتطبيقات
 🇸🇦 الدولة المملكة العربية السعودية
 📧 البريد webmazen4@gmail.com
-🔗 الرابط linktr.ee/Mazenweb
-🐙 GitHub 1 github.com/xs-35
-🐙 GitHub 2 github.com/mazin9990
+🔗 الرابط https://linktr.ee/Mazenweb
+🐙 GitHub 1 https://github.com/xs-35
+🐙 GitHub 2 https://github.com/mazin9990
 
 </div>
 
