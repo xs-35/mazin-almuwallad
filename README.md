@@ -156,8 +156,8 @@ Opera ✅ كامل
 · 🇸🇦 المملكة العربية السعودية
 · 📧 webmazen4@gmail.com
 · 🔗 https://linktr.ee/Mazenweb
-· 🐙 github.com/xs-35
-· 🐙 github.com/mazin9990
+· 🐙 https://github.com/xs-35
+· 🐙 https://github.com/mazin9990
 
 ---
 
