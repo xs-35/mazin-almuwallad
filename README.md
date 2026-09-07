@@ -1,7 +1,11 @@
 
 🚀 منصة بناء السيرة الذاتية الاحترافية ATS - المبرمج ميزو
 
-https://img.shields.io/badge/version-2.0-blue
+![Mazen Al-Mowallad Portfolio](https://img.shields.io/badge/Developer-Mazen_Al--Mowallad-brightgreen)
+![License](https://img.shields.io/badge/License-MIT-blue)
+![Status](https://img.shields.io/badge/Status-Active-success)
+
+!(https://img.shields.io/badge/version-2.0-blue) 
 https://img.shields.io/badge/React-18-61DAFB
 https://img.shields.io/badge/Tailwind-3-38B2AC
 https://img.shields.io/badge/license-MIT-green
