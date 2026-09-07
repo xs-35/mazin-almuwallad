@@ -7,10 +7,10 @@
 
 ![](https://img.shields.io/badge/version-2.0-blue) 
 ![](https://img.shields.io/badge/React-18-61DAFB) 
-https://img.shields.io/badge/Tailwind-3-38B2AC
-https://img.shields.io/badge/license-MIT-green
-https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white
-https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black
+![](https://img.shields.io/badge/Tailwind-3-38B2AC) 
+![](https://img.shields.io/badge/license-MIT-green) 
+![](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white) 
+![](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black) 
 
 ---
 
